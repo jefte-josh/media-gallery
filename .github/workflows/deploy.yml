@@ -18,6 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node
@@ -29,6 +30,8 @@ jobs:
         run: npm ci
       - name: Build with Next.js
         run: npm run build && npx next export
+      - name: Generate Media List
+        run: npm run generate-media
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
