@@ -4,6 +4,8 @@ import path from 'path';
 import { promises as fsPromises } from 'fs';
 
 const MEDIA_DIR = path.join(process.cwd(), 'public', 'media');
+// Add the basePath here
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''; // Use environment variable or default
 
 export async function GET() {
   try {
@@ -12,7 +14,7 @@ export async function GET() {
 
     // Read all files from the media directory
     const files = await fsPromises.readdir(MEDIA_DIR);
-    
+
     // Filter for supported media files
     const mediaFiles = files.filter(file => {
       const ext = path.extname(file).toLowerCase();
@@ -25,9 +27,10 @@ export async function GET() {
         const filePath = path.join(MEDIA_DIR, file);
         const stats = await fsPromises.stat(filePath);
         const ext = path.extname(file).toLowerCase();
-        
+
         return {
-          src: `/media/${file}`,
+          // Prepend BASE_PATH here
+          src: `${BASE_PATH}/media/${file}`,
           type: ['.mp4', '.webm', '.mov'].includes(ext) ? 'video' : 'image',
           alt: path.parse(file).name,
           size: stats.size,
@@ -43,4 +46,4 @@ export async function GET() {
     console.error('Error reading media directory:', error);
     return NextResponse.json({ error: 'Failed to read media directory' }, { status: 500 });
   }
-} 
+}
